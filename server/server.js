@@ -12,7 +12,6 @@ var app = express();
 var server = http.createServer(app)
 var io = socketIO(server);
 
-
 io.on('connection', (socket) => {
 
     console.log('new user connected');
@@ -21,10 +20,12 @@ io.on('connection', (socket) => {
 
     socket.broadcast.emit('newMessage', genarateMessage('Admin', 'New User Join'))
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('Message : ', message);
 
         io.emit('newMessage', genarateMessage(message.from, message.text))
+
+        callback('This is from server.js');
 
         // socket.broadcast.emit('newMessage', {
         //     'from': message.from,
