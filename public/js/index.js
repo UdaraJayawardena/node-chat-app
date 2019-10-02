@@ -1,4 +1,4 @@
-var socket = io.connect('192.168.1.9:3000', {reconnect: true});
+var socket = io.connect('192.168.8.195:3000', {reconnect: true});
 
 socket.on('connect', function () {
     console.log('connected to the server');
@@ -23,7 +23,9 @@ socket.on('newMessage', function (message) {
     console.log(message);
 
     var li = jQuery('<li></li>');
-    li.text(`${message.from}: ${
+    li.text(`${
+        message.from
+    }: ${
         message.text
     }`);
 
@@ -49,4 +51,17 @@ jQuery('#message-form').on('submit', function (e) {
         'from': 'user',
         'text': jQuery('[name=message]').val()
     }, function () {});
+});
+
+var locationButton = jQuery('#send-location');
+locationButton.on('click', function () {
+    if(!navigator.geolocation){
+        return ('Geo location not supported by browser')
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position){
+        console.log(position);
+    },function(){
+        console.log('unable to fetch location');
+    });
 });
