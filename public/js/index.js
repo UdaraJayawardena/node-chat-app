@@ -1,4 +1,4 @@
-var socket = io.connect('192.168.8.195:3000', {reconnect: true});
+var socket = io.connect('192.168.1.9:3000', {reconnect: true});
 
 socket.on('connect', function () {
     console.log('connected to the server');
@@ -32,6 +32,10 @@ socket.on('newMessage', function (message) {
     jQuery('#messages').append(li);
 })
 
+socket.on('newLocationMessage',function(message){
+var li=jQuery
+})
+
 // socket.emit('createMessage', {
 //     'from': 'Udara',
 //     'text': 'This is from Udara'
@@ -54,14 +58,20 @@ jQuery('#message-form').on('submit', function (e) {
 });
 
 var locationButton = jQuery('#send-location');
+
 locationButton.on('click', function () {
-    if(!navigator.geolocation){
-        return ('Geo location not supported by browser')
+    if (!navigator.geolocation) {
+        return('Geo location not supported by browser')
     }
 
-    navigator.geolocation.getCurrentPosition(function(position){
-        console.log(position);
-    },function(){
+    navigator.geolocation.getCurrentPosition(function (position) {
+        
+        socket.emit('createLocationMessage', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+        
+    }, function () {
         console.log('unable to fetch location');
     });
 });

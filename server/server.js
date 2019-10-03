@@ -3,7 +3,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
 
-const {genarateMessage} = require('./utils/message');
+const {genarateMessage,genarateLocationsMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 
 const port = process.env.PORT || 3000;
@@ -27,13 +27,13 @@ io.on('connection', (socket) => {
 
         callback('This is from server.js');
 
-        // socket.broadcast.emit('newMessage', {
-        //     'from': message.from,
-        //     'text': message.text,
-        //     createAt: new Date().getTime()
-        // })
-
     })
+
+    socket.on('createLocationMessage', (coords) => {
+
+        io.emit('newLocationsMessage', genarateLocationsMessage('Admin', coords.latitude, coords.longitude));
+    });
+
 
     socket.on('disconnect', () => {
         console.log('user is disconnected')
@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
 
 
 })
-
 
 app.use(express.static(publicPath));
 
